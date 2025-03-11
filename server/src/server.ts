@@ -1,23 +1,23 @@
 import dotenv from 'dotenv';
 import express from 'express';
-dotenv.config();
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
+dotenv.config();
 // Import the routes
 import routes from './routes/index.js';
-
 const app = express();
-
 const PORT = process.env.PORT || 3001;
-
-// TODO: Serve static files of entire client dist folder
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// Serve static files from the 'dist' folder
 app.use(express.static('dist'));
-
-// TO DO: Implement middleware for parsing JSON and urlencoded form data
+app.use('/db', express.static(path.join(__dirname, 'db')));
+// Middleware to parse JSON payloads
 app.use(express.json());
+// Middleware to parse URL-encoded form data
 app.use(express.urlencoded({ extended: true }));
-
-// TODO: Implement middleware to connect the routes
+// Connect routes
 app.use(routes);
-
 // Start the server on the port
 app.listen(PORT, () => console.log(`Listening on PORT: ${PORT}`));

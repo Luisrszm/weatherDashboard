@@ -1,52 +1,94 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-// TODO: Define an interface for the Coordinates object
-interface Coordinates {
-  longitude: number;
-  latitude: number;
-}
-
 // TODO: Define a class for the Weather object
-class Weather {
-  coord: Coordinates[];
-  temp: number;
-  wind: number;
-  humidity: number;
-
-  constructor(coord: Coordinates[], temp: number, wind: number, humidity: number){
-    this.coord = coord
-    this.temp = temp
-    this.wind = wind
-    this.humidity = humidity
-  }
+export interface weather_src {
+  city?: string;
+  id? : number;
+  date: string;
+  icon: string;
+  iconDescription: string;
+  tempF: number;
+  windSpeed: number;
+  humidity: number,
 }
-
 // TODO: Complete the WeatherService class
-class WeatherService {
-  // TODO: Define the baseURL, API key, and city name properties
-  private baseURL = process.env.API_BASE_URL
-  private API_KEY = process.env.API_KEY
-  // TODO: Create fetchLocationData method
-  private async fetchLocationData(query: string) {
-    const url = `${this.baseURL}/data/2.5/forecast?lat={lat}&lon={lon}&appid=${this.API_KEY}`
-  }
-  // TODO: Create destructureLocationData method
-  // private destructureLocationData(locationData: Coordinates): Coordinates {}
-  // TODO: Create buildGeocodeQuery method
-  // private buildGeocodeQuery(): string {}
-  // TODO: Create buildWeatherQuery method
-  // private buildWeatherQuery(coordinates: Coordinates): string {}
-  // TODO: Create fetchAndDestructureLocationData method
-  // private async fetchAndDestructureLocationData() {}
-  // TODO: Create fetchWeatherData method
-  // private async fetchWeatherData(coordinates: Coordinates) {}
-  // TODO: Build parseCurrentWeather method
-  // private parseCurrentWeather(response: any) {}
-  // TODO: Complete buildForecastArray method
-  // private buildForecastArray(currentWeather: Weather, weatherData: any[]) {}
-  // TODO: Complete getWeatherForCity method
-  // async getWeatherForCity(city: string) {}
-}
 
-export default new WeatherService();
+export class WeatherService {
+
+  baseURL: string;
+  apiKEY: string;
+  cityName: string;
+
+  constructor(cityName: string) {
+
+    this.baseURL = process.env.API_BASE_URL || '';
+    this.apiKEY = process.env.API_KEY || '';
+    this.cityName = cityName;
+  }
+
+    async getWeatherForCity(): Promise<weather_src | null>{
+     try {
+       const url_string = `${this.baseURL}/data/2.5/weather?q=${this.cityName}&appid=${this.apiKEY}`;      
+       const response = await fetch(url_string);
+       
+       if (!response.ok) {
+         throw new Error(`Error: ${response.status} ${response.statusText}`);
+       }
+ 
+       const data: any = await response.json();
+ 
+       const weather_object : weather_src  = {
+         city: data.name,
+         date: new Date(data.dt * 1000).toLocaleDateString('es-ES'),
+         icon: data.weather[0].icon,
+         iconDescription: data.weather[0].description,
+         tempF: data.main.temp,
+         windSpeed: data.wind.speed,
+         humidity: data.main.humidity
+       };
+ 
+       return weather_object;
+ 
+     } catch (error) {
+       console.error(`Error obtaining weather: ${(error as Error).message}`);
+       return null;
+     }
+   }
+
+  async getWeatherForecast(): Promise<Array<weather_src> | null> {
+
+    const url_string = `${this.baseURL}/data/2.5/forecast?q=${this.cityName}&appid=${this.apiKEY}`;      
+    const response = await fetch(url_string);
+    const forecast_arr : Array<weather_src> =  [];
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
+    }
+
+    const data: any = await response.json();
+    let curr_day : string = "start";
+
+    data.list.forEach((element : any) => {
+      const format_day : string = new Date(element.dt * 1000).toLocaleDateString('es-ES');
+      if (format_day != curr_day) {
+        curr_day = format_day;
+
+        const curr_day_weather : weather_src = {
+          city : this.cityName,
+          id: element.weather[0].id,
+          date : format_day,
+          icon: element.weather[0].icon,
+          iconDescription: element.weather[0].description,
+          tempF: element.main.temp,
+          windSpeed: element.wind.speed,
+          humidity: element.main.humidity
+        };
+
+        forecast_arr.push(curr_day_weather);
+      }
+    });
+
+    return forecast_arr;
+  }
+}

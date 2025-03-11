@@ -1,4 +1,4 @@
-# weatherDashboard
+# weatherDashboardSuper
 
 ## Description
 
@@ -17,11 +17,11 @@ This project provides a simple and intuitive way to view the current weather out
 
 ## Installation
 
-In order to initialize we have to open a dedicated terminal at `Challenge 9` directory. Inside the terminal input `npm start` in order to run the script just after installing the required dependencies.
+No installation required
 
 ## Usage
 
-Follow this tutorial to know how to use this tool properly: [tutorial video link](#).
+Follow [this link](#https://weatherdashboardsuper.onrender.com) to use the web service.
 
 ## License
 
@@ -38,13 +38,6 @@ There are many ways in which you can participate in this project, for example:
 - Review the documentation and make pull requests for anything from typos to additional and new content
 
 ---
-
-## Tests
-
-QR Code to the video tutorial:
-
-![image]()
-
 
 ## Questions
 

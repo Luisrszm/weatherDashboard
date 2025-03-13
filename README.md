@@ -21,7 +21,7 @@ No installation required
 
 ## Usage
 
-Follow [this link](#https://weatherdashboardsuper.onrender.com) to use the web service.
+Follow [this link](https://weatherdashboardsuper.onrender.com) to use the web service.
 
 ## License
 

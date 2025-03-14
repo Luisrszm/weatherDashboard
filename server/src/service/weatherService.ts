@@ -58,7 +58,7 @@ export class WeatherService {
 
   async getWeatherForecast(): Promise<Array<weather_src> | null> {
 
-    const url_string = `${this.baseURL}/data/2.5/forecast?q=${this.cityName}&appid=${this.apiKEY}`;      
+    const url_string = `${this.baseURL}/data/2.5/forecast?q=${this.cityName}&units=imperial&appid=${this.apiKEY}`;      
     const response = await fetch(url_string);
     const forecast_arr : Array<weather_src> =  [];
 

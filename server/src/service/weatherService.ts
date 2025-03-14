@@ -29,7 +29,7 @@ export class WeatherService {
 
     async getWeatherForCity(): Promise<weather_src | null>{
      try {
-       const url_string = `${this.baseURL}/data/2.5/weather?q=${this.cityName}&appid=${this.apiKEY}`;      
+       const url_string = `${this.baseURL}/data/2.5/weather?q=${this.cityName}&units=imperial&appid=${this.apiKEY}`;      
        const response = await fetch(url_string);
        
        if (!response.ok) {
